@@ -9,39 +9,53 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h2>Connection success</h2>
-<% String un=session.getAttribute("user").toString();  %>
-<h3>Welcome <%out.println(un); %></h3>
-
 <%
+
 try
 {
 	
 	
 	Connection connection=DbConnection.getConnection();
+	String username=request.getParameter("un");
+	String pass=request.getParameter("pwd");
 	Statement statement=connection.createStatement();
-	String uquery="update user SET `address`='NY' where name='"+un+"'";
-	statement.executeUpdate(uquery);
-	System.out.println("Data updated");
-	%>
+	ResultSet set=statement.executeQuery("select * from user");
+	int flag=0;
+	String user="";
+	while(set.next())
+	{
+		if(username.equals(set.getString(2)) && pass.equals(set.getString(3)))
+		{
+		flag=1;
+		
+		session.setAttribute("user", username);
+		}
+		
+	}
+	System.out.println("I am working");
+	if(flag==1)
+	{
 	
-	<form>
-	Name <input type="text" name="uname">
-	<input type="submit">
-	</form>
+		response.sendRedirect("success.jsp");
+	}
+	else
+	{
+		response.sendRedirect("index.html");
+	}
 	
-	<%
+	
+	
+	
+	
 	
 }
-
-
 catch (Exception e) {
 	System.out.println(e);
 	response.sendRedirect("index.html");
 }
-
-
 %>
+
+
 
 
 
